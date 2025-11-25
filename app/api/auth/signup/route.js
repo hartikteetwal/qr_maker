@@ -9,6 +9,12 @@ export async function POST(req) {
         await connectDB();
         const { name, email, password } = await req.json();
 
+        if (!password.length >= 8) {
+            return NextResponse.json({
+                success: false, message: "Password must be greator 8 charactor", status: 404
+            })
+        }
+
         const existingUser = await userModal.findOne({ email });
         if (existingUser)
             return NextResponse.json(
