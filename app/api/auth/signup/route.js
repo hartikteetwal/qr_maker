@@ -1,26 +1,31 @@
-import connectDB from "@/lib/db";
-import User from "@/models/User";
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
+import { connectDB } from "../../../lib/db";
+import userModal from "../../../lib/userModal";
+import jwt from "jsonwebtoken"
+import bcrypt from 'bcrypt'
 
 export async function POST(req) {
     try {
         await connectDB();
         const { name, email, password } = await req.json();
 
-        const existingUser = await User.findOne({ email });
+        const existingUser = await userModal.findOne({ email });
         if (existingUser)
             return NextResponse.json(
-                { message: "Email already exists" },
-                { status: 400 }
+                {
+                success:false,
+            message: "Email already exists" ,status: 400 }
             );
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-        await User.create({ name, email, password: hashedPassword });
+        
+        const newUser = await userModal.create({ name, email, password: hashedPassword });
+        const token = jwt.sign({ userId: newUser._id },process.env.SECRET_KEY)
 
-        return NextResponse.json({ message: "User created successfully" });
+        return NextResponse.json({success:true, message: "User created successfully" ,token});
     } catch (error) {
-        return NextResponse.json({ error: "Server error" }, { status: 500 });
+        return NextResponse.json({ success:false,error: "Server error" , status: 500 });
     }
 }
