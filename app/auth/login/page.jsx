@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { LoginService } from "@/app/services/auth"
 
 export default function LoginPage() {
     const router = useRouter()
@@ -17,26 +18,18 @@ export default function LoginPage() {
         setLoading(true)
 
         try {
-            const URL = process.env.NEXT_PUBLIC_API_URL
-            const res = await fetch(`${URL}/auth/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            })
+            const res = await LoginService(email,password)
+            console.log("response",res)
 
-            const data = await res.json()
-
-            if (!res.ok) {
+            if (!res.success) {
                 throw new Error(data.message || "Login failed")
             }
 
             // ✅ Save token
-            localStorage.setItem("token", data.token)
+            localStorage.setItem("token", res.token)
 
             // ✅ Redirect after login
-            document.cookie = `token=${data.token}; path=/`
+            document.cookie = `token=${res.token}; path=/`
             router.push("/dashboard")
 
         } catch (err) {

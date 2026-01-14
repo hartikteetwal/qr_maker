@@ -1,25 +1,7 @@
 export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50">
-      {/* Navbar */}
-      {/* <header className="w-full py-4 bg-white shadow-sm">
-        <div className="max-w-6xl mx-auto flex justify-between items-center px-4">
-          <h1 className="text-2xl font-bold text-blue-600">QR Maker</h1>
-
-          <div className="flex items-center gap-4">
-            <a href="/auth/login" className="text-gray-700 hover:text-blue-600">
-              Login
-            </a>
-            <a
-              href="/auth/signup"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              Sign Up
-            </a>
-          </div>
-        </div>
-      </header> */}
-
+ 
       {/* Hero Section */}
       <section className="max-w-6xl mx-auto flex flex-col md:flex-row items-center px-4 py-16">
         {/* Left Content */}
@@ -81,11 +63,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      {/* <footer className="text-center py-6 text-gray-600 border-t mt-16">
-        © {new Date().getFullYear()} QR Maker. All rights reserved.
-      </footer> */}
     </main>
   );
 }

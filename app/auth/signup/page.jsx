@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { SignUpService } from "@/app/services/auth"
 
 export default function SignupPage() {
     const router = useRouter()
@@ -19,21 +20,9 @@ export default function SignupPage() {
 
         try {
             const URL = process.env.API_URL
-            const res = await fetch(`${URL}/auth/signup`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    password,
-                }),
-            })
+            const res = await SignUpService(name,email,password)
 
-            const data = await res.json()
-
-            if (!res.ok) {
+            if (!res.success) {
                 throw new Error(data.message || "Signup failed")
             }
 
