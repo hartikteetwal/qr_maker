@@ -1,83 +1,69 @@
-qr-maker/
-│
+qr_maker/
+├── eslint.config.mjs
+├── foler.md
+├── globals.css
+├── jsconfig.json
+├── middleware.js
+├── next.config.mjs
+├── package.json
+├── postcss.config.mjs
+├── README.md
 ├── app/
-│   ├── layout.js
 │   ├── globals.css
-│   │
-│   ├── page.js                 → Home Page
-│   │
-│   ├── auth/
-│   │   ├── login/
-│   │   │   └── page.js
-│   │   ├── signup/
-│   │   │   └── page.js
-│   │   └── reset-password/
-│   │       └── page.js
-│   │
-│   ├── dashboard/
-│   │   └── page.js             → After login dashboard
-│   │
-│   ├── settings/
-│   │   └── upi/
-│   │       └── page.js         → Add / Update UPI ID
-│   │
-│   ├── generate/
-│   │   └── page.js             → Enter amount → generate QR
-│   │
-│   ├── qr/
-│   │   └── [id]/
-│   │       └── page.js         → QR preview page
-│   │
-│   ├── history/
-│   │   └── page.js             → All generated QR history
-│   │
-│   ├── transactions/
-│   │   └── page.js             → Payment verification logs
-│   │
+│   ├── layout.js
+│   ├── page.js
 │   ├── api/
 │   │   ├── auth/
-│   │   │   ├── login/route.js
-│   │   │   └── signup/route.js
-│   │   │
-│   │   ├── upi/
-│   │   │   └── route.js        → save/update UPI
-│   │   │
+│   │   │   ├── login/
+│   │   │   │   └── route.js
+│   │   │   └── signup/
+│   │   │       └── route.js
 │   │   ├── qr/
-│   │   │   └── route.js        → generate UPI deep link + QR
-│   │   │
+│   │   │   └── page.js
 │   │   ├── razorpay/
-│   │   │   ├── order/route.js  → Create Razorpay order
-│   │   │   └── verify/route.js → Razorpay webhook
-│   │   │
+│   │   │   ├── order/
+│   │   │   │   └── route.js
+│   │   │   └── verify/
+│   │   │       └── route.js
+│   │   ├── upi/
+│   │   │   └── route.js
 │   │   └── user/
-│   │       └── route.js        → get user profile
-│   │
+│   │       └── route.js
+│   ├── auth/
+│   │   ├── login/
+│   │   │   └── page.jsx
+│   │   └── signup/
+│   │       └── page.jsx
+│   ├── dashboard/
+│   │   └── page.jsx
+│   ├── generate/
+│   │   └── page.jsx
+│   ├── history/
+│   │   └── page.jsx
+│   ├── qr/
+│   │   └── [id]/
+│   │       └── page.jsx
+│   ├── redux/
+│   │   ├── authSlice.js
+│   │   └── store.js
+│   ├── services/
+│   │   ├── api.js
+│   │   ├── auth.js
+│   ├── settings/
+│   │   └── upi/
+│   │       └── page.jsx
+│   ├── transactions/
+│   │   └── page.jsx
 │   └── utils/
-│       ├── auth.js             → JWT / session helper
-│       ├── db.js               → Database configuration
-│       ├── qr.js               → QR generator utility
-│       └── razorpay.js         → Razorpay config
-│
+│       ├── auth.js
+│       ├── db.js
+│       ├── qr.js
+│       └── userModel.js
 ├── components/
-│   ├── Navbar.js
-│   ├── Footer.js
-│   ├── Input.js
-│   ├── Button.js
-│   ├── QRCard.js
-│   └── DashboardCard.js
-│
-├── lib/
-│   ├── prisma.js               → Prisma Client
-│   └── validations.js          → zod validations
-│
-├── prisma/
-│   └── schema.prisma           → Database schema
-│
-├── public/
-│   ├── logo.png
-│   ├── qr-placeholder.png
-│   └── icons/
-│
-├── .env.local                  → Environment variables
-├── package.json
-└── tailwind.config.js
+│   ├── Button.jsx
+│   ├── DashboardCard.jsx
+│   ├── Footer.jsx
+│   ├── Input.jsx
+│   ├── Navbar.jsx
+│   └── QRCard.jsx
+└── public/

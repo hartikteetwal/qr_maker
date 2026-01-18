@@ -3,15 +3,21 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { SignUpService } from "@/app/services/auth"
+import { setAuthUser } from "@/app/redux/authSlice"
+import { useDispatch } from "react-redux"
 
 export default function SignupPage() {
     const router = useRouter()
+    const dispatch = useDispatch();
+
 
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
+
+    console.log("Name",name)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -26,8 +32,17 @@ export default function SignupPage() {
                 throw new Error(data.message || "Signup failed")
             }
 
-            // ✅ Redirect to login after successful signup
-            router.push("/auth/login")
+               // ✅ Save auth user in Redux + localStorage + cookie
+                        dispatch(
+                            setAuthUser({
+                                token: res.token,
+                                role: res.role,
+                                userId: res.userId,
+                                name:res.name
+                            })
+                        );
+            
+                        router.push("/dashboard");
         } catch (err) {
             setError(err.message)
         } finally {
@@ -63,7 +78,7 @@ export default function SignupPage() {
                             onChange={(e) => setName(e.target.value)}
                             required
                             placeholder="Enter your name"
-                            className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-4 py-3 border rounded-lg text-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
 
@@ -78,7 +93,7 @@ export default function SignupPage() {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             placeholder="Enter your email"
-                            className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-4 py-3 border rounded-lg text-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
 
@@ -94,7 +109,7 @@ export default function SignupPage() {
                             required
                             minLength={6}
                             placeholder="Create a password"
-                            className="w-full px-4 py-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-4 py-3 border rounded-lg text-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
 

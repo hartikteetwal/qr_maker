@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50">
@@ -16,12 +18,12 @@ export default function Home() {
             even track transactions.
           </p>
 
-          <a
+          <Link
             href="/generate"
             className="inline-block px-6 py-3 mt-6 bg-blue-600 text-white rounded-lg text-lg hover:bg-blue-700"
           >
             Generate QR
-          </a>
+          </Link>
         </div>
 
         {/* Right Image */}

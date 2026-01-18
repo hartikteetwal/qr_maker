@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 const { Schema, model, models, Types } = mongoose;
 
-const qrCodeSchema = new Schema(
+const upiSchema = new Schema(
   {
-    value: {
+    upi_id: {
       type: String,
       required: true,
     },
@@ -13,15 +13,11 @@ const qrCodeSchema = new Schema(
       required: true,
       ref: "User", // optional, if you have a User collection
     },
-    upi_Id: {
-      type: Types.ObjectId,
-      required: true,
+    upi_name:{
+        type: String,
+        required: true,
     },
-    qr_code_image: {
-      type: String,
-      required: true,
-    },
-    used_count: {
+    status: {
       type: Number,
       default: 0,
     },
@@ -32,6 +28,6 @@ const qrCodeSchema = new Schema(
   }
 );
 
-const QrModel = models.qr_code || model("qr_code", qrCodeSchema);
+const UpiModel = models.upi_data || model("upi_data", upiSchema);
 
-export default QrModel;
+export default UpiModel;

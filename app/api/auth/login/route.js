@@ -14,7 +14,7 @@ export async function POST(req) {
     if (payload.email === process.env.ADMIN_EMAIL && payload.password === process.env.ADMIN_PASSWORD) {
 
         const token = jwt.sign({ email: payload.password }, process.env.SECRET_KEY)
-        return NextResponse.json({ success: true, message: "Login successfully", token: token, role: "admin" })
+        return NextResponse.json({ success: true, message: "Login successfully", token: token, role: "admin"})
     } else {
         
         const user = await User.findOne({ email: payload.email })
@@ -27,7 +27,7 @@ export async function POST(req) {
         const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY)
 
 
-        return NextResponse.json({ success: true, message: "Login successfully", token: token, role: "user" })
+        return NextResponse.json({ success: true, message: "Login successfully", token: token, role: "user", userId: user._id ,name:user.name})
     }
 
 }

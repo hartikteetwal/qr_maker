@@ -1,43 +1,51 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { LoginService } from "@/app/services/auth"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { LoginService } from "@/app/services/auth";
+import { setAuthUser } from "@/app/redux/authSlice";
+import { useDispatch } from "react-redux";
+import Link from "next/link";
 
 export default function LoginPage() {
-    const router = useRouter()
+    const router = useRouter();
+    const dispatch = useDispatch();
 
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
+    const [email, setEmail] = useState("teetwalhartik@gmail.com");
+    const [password, setPassword] = useState("12345678");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        setError("")
-        setLoading(true)
+        e.preventDefault();
+        setError("");
+        setLoading(true);
 
         try {
-            const res = await LoginService(email,password)
-            console.log("response",res)
+            const res = await LoginService(email, password);
+            console.log("response", res);
 
             if (!res.success) {
-                throw new Error(data.message || "Login failed")
+                throw new Error(res.message || "Login failed");
             }
 
-            // ✅ Save token
-            localStorage.setItem("token", res.token)
+            // ✅ Save auth user in Redux + localStorage + cookie
+            dispatch(
+                setAuthUser({
+                    token: res.token,
+                    role: res.role,
+                    userId: res.userId,
+                    name:res.name
+                })
+            );
 
-            // ✅ Redirect after login
-            document.cookie = `token=${res.token}; path=/`
-            router.push("/dashboard")
-
+            router.push("/dashboard");
         } catch (err) {
-            setError(err.message)
+            setError(err.message);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     return (
         <main className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -45,6 +53,7 @@ export default function LoginPage() {
                 <h2 className="text-3xl font-bold text-center text-blue-600">
                     Login to QR Maker
                 </h2>
+
                 <p className="text-center text-gray-600 mt-2 mb-6">
                     Welcome back! Please log in to continue.
                 </p>
@@ -56,7 +65,6 @@ export default function LoginPage() {
                 )}
 
                 <form className="space-y-5" onSubmit={handleSubmit}>
-                    {/* Email */}
                     <div>
                         <label className="block font-medium mb-1 text-gray-700">
                             Email
@@ -71,7 +79,6 @@ export default function LoginPage() {
                         />
                     </div>
 
-                    {/* Password */}
                     <div>
                         <label className="block font-medium mb-1 text-gray-700">
                             Password
@@ -86,7 +93,6 @@ export default function LoginPage() {
                         />
                     </div>
 
-                    {/* Submit */}
                     <button
                         type="submit"
                         disabled={loading}
@@ -98,14 +104,14 @@ export default function LoginPage() {
 
                 <p className="text-center text-gray-600 mt-4">
                     Don’t have an account?{" "}
-                    <a
+                    <Link
                         href="/auth/signup"
                         className="text-blue-600 font-semibold"
                     >
                         Sign Up
-                    </a>
+                    </Link>
                 </p>
             </div>
         </main>
-    )
+    );
 }
