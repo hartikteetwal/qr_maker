@@ -7,153 +7,146 @@ import { changeActiveUpi, fetchUpiList, GenerateQR } from "../services/api";
 
 export default function GenerateQRPage() {
     const [amount, setAmount] = useState("");
-    const [qrSrc, setQrSrc] = useState("");
     const [upiList, setUpiList] = useState([]);
     const [selectedUpi, setSelectedUpi] = useState(null);
+    const [qrData, setQrData] = useState([]);
 
     const authUser = useSelector((state) => state.auth.authUser);
     const router = useRouter();
 
-    // Fetch UPI List
+    // Fetch UPI list
     const fetchUpi = async () => {
-        try {
-            const res = await fetchUpiList(authUser?.userId);
-            if (res.success) {
-                setUpiList(res.data);
-
-                // Preselect UPI with status=1
-                const activeUpi = res.data.find((u) => u.status === 1);
-                setSelectedUpi(activeUpi || null);
-            }
-        } catch (error) {
-            console.error("Error fetching UPI list:", error);
+        const res = await fetchUpiList(authUser?.userId);
+        if (res.success) {
+            setUpiList(res.data);
+            const activeUpi = res.data.find((u) => u.status === 1);
+            setSelectedUpi(activeUpi || null);
         }
     };
 
     useEffect(() => {
-        if (authUser?.userId) {
-            fetchUpi();
-        }
+        if (authUser?.userId) fetchUpi();
     }, [authUser]);
 
-    // Handle UPI change
     const handleUpiChange = async (upiId) => {
-        setSelectedUpi(upiList.find((u) => u.id === upiId));
+        const upi = upiList.find((u) => u._id === upiId);
+        setSelectedUpi(upi);
 
-        try {
-            await changeActiveUpi(upiId, authUser.userId); // API call to change status by ID
-            // Refetch UPI list after status change
-            fetchUpi();
-        } catch (err) {
-            console.error("Error changing active UPI:", err);
-        }
+        await changeActiveUpi(upiId, authUser?.userId);
+        fetchUpi();
     };
 
-    // Generate QR
     const generateQR = async () => {
-        if (!amount) return alert("Please enter amount");
-        if (!selectedUpi) return alert("Please select a UPI");
+        if (!amount) return alert("Enter amount");
+        if (!selectedUpi) return alert("Select UPI");
 
-        try {
-            const res = await GenerateQR({
-                value: amount,
-                user_id: authUser.userId,
-            });
-            if (res?.qr_code_image) setQrSrc(res.qr_code_image);
-        } catch (err) {
-            console.log(err);
-            alert("Error generating QR");
+        const res = await GenerateQR({
+            value: amount,
+            user_id: authUser?.userId,
+        });
+
+        if (res?.qrCode) {
+            setQrData(res.qrCode);
         }
     };
 
-    // Download QR
     const downloadQR = () => {
-        if (!qrSrc) return;
         const link = document.createElement("a");
-        link.href = qrSrc;
-        link.download = `qr-${amount}.png`;
+        link.href = qrData?.qr_code_image;
+        link.download = `upi-qr-${qrData.value}.png`;
         link.click();
     };
+    console.log("qrData", qrData)
 
     return (
-        <main className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-3xl mx-auto">
+        <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6">
+            <div className="w-full max-w-xl">
 
-                {/* Title + UPI Selection */}
-                <div className="flex items-center justify-between mb-8">
-                    <h1 className="text-3xl font-bold text-gray-800">
-                        Generate UPI QR Code
-                    </h1>
+                {qrData.length===0 ? (
+                    /* -------- Generate QR Card -------- */
+                    <div className="bg-white rounded-2xl shadow-lg p-8">
+                        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+                            Generate UPI QR Code
+                        </h1>
 
-                    {upiList.length === 0 ? (
-                        <button
-                            onClick={() => router.push("/upi")}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-                        >
-                            Add UPI
-                        </button>
-                    ) : (
-                        <select
-                            value={selectedUpi?._id || ""}
-                            onChange={(e) => handleUpiChange(e.target.value)}
-                            className="border rounded-lg px-4 py-2 focus:ring-2 text-gray-700 focus:ring-blue-500 outline-none"
-                        >
-                            {!upiList.some((u) => u.status === 1) && (
-                                <option value="">Select UPI</option>
-                            )}
-                            {upiList.map((upi) => (
-                                <option key={upi._id} value={upi._id}>
-                                    {upi.upi_name}
-                                </option>
-                            ))}
-                        </select>
-                    )}
-                </div>
-
-                <div className="bg-white p-6 rounded-xl shadow border">
-                    {/* Amount Input */}
-                    <label className="block mb-2 font-medium text-gray-700">
-                        Enter Amount (₹)
-                    </label>
-
-                    <input
-                        type="number"
-                        className="w-full border rounded-lg px-4 text-gray-700 py-3 text-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                        placeholder="Enter amount e.g. 250"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                    />
-
-                    {/* Generate Button */}
-                    <button
-                        onClick={generateQR}
-                        className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg text-lg font-medium"
-                    >
-                        Generate QR
-                    </button>
-
-                    {/* QR Preview */}
-                    {qrSrc && (
-                        <div className="mt-8 text-center">
-                            <p className="font-medium text-gray-700 mb-4">
-                                Your QR Code is ready
-                            </p>
-
-                            <img
-                                src={qrSrc}
-                                alt="QR Code"
-                                className="mx-auto w-60 h-60 rounded-lg border shadow"
-                            />
-
+                        {upiList.length === 0 ? (
                             <button
-                                onClick={downloadQR}
-                                className="mt-6 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg"
+                                onClick={() => router.push("/upi")}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-gray-700 py-3 rounded-lg"
+                            >
+                                Add UPI
+                            </button>
+                        ) : (
+                            <select
+                                value={selectedUpi?._id || ""}
+                                onChange={(e) => handleUpiChange(e.target.value)}
+                                    className="w-full mb-4 border rounded-lg px-4 text-gray-700 py-3"
+                            >
+                                    <option value="" className="text-gray-700">Select UPI</option>
+                                {upiList.map((upi) => (
+                                    <option className="text-gray-700" key={upi._id} value={upi._id}>
+                                        {upi.upi_name}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+
+                        <input
+                            type="number"
+                            placeholder="Enter Amount (₹)"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            className="w-full border rounded-lg px-4 py-3 mb-4 text-gray-700"
+                        />
+
+                        <button
+                            onClick={generateQR}
+                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg text-lg"
+                        >
+                            Generate QR
+                        </button>
+                    </div>
+                ) : (
+                    /* -------- QR Result Card -------- */
+                    <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+                        <div className="inline-block bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-medium mb-4">
+                            ✅ QR Generated Successfully
+                        </div>
+
+                        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                            ₹{qrData.value}
+                        </h2>
+
+                        <p className="text-gray-500 mb-6">
+                            Scan & Pay using any UPI App
+                        </p>
+
+                        <img
+                            src={qrData?.qr_code_image}
+                            alt="QR Code"
+                            className="mx-auto w-56 h-56 rounded-xl border shadow mb-6"
+                        />
+
+                        <div className="space-y-3">
+                            <button
+                                onClick={()=>downloadQR()}
+                                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg"
                             >
                                 Download QR
                             </button>
+
+                            <button
+                                onClick={() => {
+                                    setQrData(null);
+                                    setAmount("");
+                                }}
+                                className="w-full border border-gray-300 hover:bg-gray-100 py-3 rounded-lg"
+                            >
+                                Generate New QR
+                            </button>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </main>
     );
