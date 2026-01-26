@@ -12,10 +12,20 @@ export const fetchUpiList = (userId) => {
     method: "GET",
   })
 }
+export const fetchUpiHistory = () => {
+  return apiClient(`/api/history`, {
+    method: "GET",
+  })
+}
 export const changeActiveUpi = (upiId, userId) => {
   return apiClient(`/api/upi?upi_id=${upiId}`, {
     method: "PUT",
     body: JSON.stringify({ user_id: userId, source: "status" }),
+  })
+}
+export const fetchUseHistory = (upiId) => {
+  return apiClient(`/api/history?qr_id=${upiId}`, {
+    method: "GET"
   })
 }
 export const deleteUpiId = (upiId) => {

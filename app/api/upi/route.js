@@ -123,9 +123,9 @@ export async function PUT(req) {
 
     console.log("Updating UPI:", { upi_id, source, user_id })
 
-    if (!upi_id || !source || !user_id) {
+    if (!upi_id || !user_id) {
       return NextResponse.json(
-        { success: false, message: "upi_id, source and user_id required" },
+        { success: false, message: "upi_id and user_id required" },
         { status: 400 }
       )
     }
@@ -143,10 +143,10 @@ export async function PUT(req) {
       )
     }else{
       const upi_name = body.upi_name;
-      const upi_id = body.upi_id;
+      console.log("Updating UPI details:", { upi_name, upi_id });
       await UpiModel.updateOne(
         { _id:upi_id },
-        { $set: { upi_name, upi_id } }
+        { $set: { upi_name, upi_id: body.upi_id } }
       )
     }
 

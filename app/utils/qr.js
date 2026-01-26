@@ -14,7 +14,11 @@ const qrCodeSchema = new Schema(
       ref: "User", // optional, if you have a User collection
     },
     upi_Id: {
-      type: Types.ObjectId,
+      type: String,
+      required: true,
+    },
+    upi_name: {
+      type: String,
       required: true,
     },
     qr_code_image: {
@@ -23,7 +27,7 @@ const qrCodeSchema = new Schema(
     },
     used_count: {
       type: Number,
-      default: 0,
+      default: 1,
     },
   },
   {

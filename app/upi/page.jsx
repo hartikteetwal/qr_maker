@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { addUpiId, deleteUpiId, fetchUpiList } from "../services/api"
+import { addUpiId, deleteUpiId, fetchUpiList, updateUpiId } from "../services/api"
 import Toggle from "@/components/Toggle"
 
 const UpiPage = () => {
@@ -46,7 +46,8 @@ const UpiPage = () => {
     }
     let res;
     if (editIndex !== null) {
-      res = await updateUpiId({ ...payload, upi_id: upiList[editIndex]._id })
+      console.log("Updating UPI ID at index:", editIndex, payload)
+      res = await updateUpiId(payload, upiList[editIndex]._id)
     }else{ 
       res = await addUpiId(payload)
     }
@@ -107,7 +108,7 @@ const UpiPage = () => {
 
           <button
             type="submit"
-            className="bg-blue-600 text-white  rounded-lg px-4 py-2 hover:bg-blue-700"
+            className="bg-blue-600 text-white  rounded-lg px-4 py-2 hover:bg-blue-700 cursor-pointer"
           >
             {editIndex !== null ? "Update" : "Add"}
           </button>
@@ -142,13 +143,13 @@ const UpiPage = () => {
                     <td className="p-3 flex justify-center gap-3">
                       <button
                         onClick={() => handleEdit(index)}
-                        className="text-blue-600 hover:underline"
+                        className="text-blue-600 hover:underline cursor-pointer"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(upi._id)}
-                        className="text-red-600 hover:underline"
+                        className="text-red-600 hover:underline cursor-pointer"
                       >
                         Delete
                       </button>

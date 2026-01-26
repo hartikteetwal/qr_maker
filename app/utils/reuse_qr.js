@@ -8,7 +8,15 @@ const reuseQrCodeSchema = new Schema(
             type: Types.ObjectId,
             required: true,
         },
-        user_id: {
+         upi_name: {
+      type: String,
+      required: true,
+    },
+    upi_Id: {
+      type: String,
+      required: true,
+    },
+        user_id: { 
             type: Types.ObjectId, // better to use ObjectId for referencing users
             required: true,
             ref: "User", // optional, if you have a User collection
@@ -21,6 +29,6 @@ const reuseQrCodeSchema = new Schema(
     }
 );
 
-const reuseQrModel = models.qr_code || model("reuse_qr_code", reuseQrCodeSchema);
+const reuseQrModel = models.reuse_qr_code || model("reuse_qr_code", reuseQrCodeSchema);
 
 export default reuseQrModel;
