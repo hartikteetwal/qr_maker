@@ -102,7 +102,7 @@ export default function GenerateQRPage() {
                     </div>
                 ) : (
                     /* -------- QR Result Card -------- */
-                    <QRCard qrData={qrData} setAmount={setAmount} setQrData={setQrData}/>
+                        <QRCard qrData={qrData} setAmount={setAmount} setQrData={setQrData} source='new' />
                 )}
             </div>
         </main>

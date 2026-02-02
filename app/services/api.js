@@ -28,6 +28,12 @@ export const fetchUseHistory = (upiId) => {
     method: "GET"
   })
 }
+export const createReuseItem = (payload) => {
+  return apiClient(`/api/reuseqr`, {
+    method: "POST",
+        body: JSON.stringify(payload),
+  })
+}
 export const deleteUpiId = (upiId) => {
   return apiClient(`/api/upi?upi_id=${upiId}`, {
     method: "DELETE",

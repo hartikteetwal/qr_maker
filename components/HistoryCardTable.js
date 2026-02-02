@@ -1,17 +1,34 @@
-    import { fetchUseHistory } from '@/app/services/api';
+    import { createReuseItem, fetchUseHistory } from '@/app/services/api';
 import { useRouter } from 'next/navigation';
     import React, { useState } from 'react'
+import { QRCard } from './QRCard';
+import Modal from './Modal ';
+import { useSelector } from 'react-redux';
 
-    export const HistoryCardTable = ({ history }) => {
+export const HistoryCardTable = ({ history, fetchHistory }) => {
         const [useHistory,setUseHistory] =useState([])
             const [open, setOpen] = useState(false)
-            const router = useRouter()
+        const [reuseItem, setReuseItem] = useState({})
+        const [showQrCard,setShowQrCard] = useState(false)
+        const router = useRouter()
+            const authUser = useSelector((state) => state.auth.authUser);
       const showHistory = async (item) => {
         const res = await fetchUseHistory(item._id)
         setUseHistory(res.data || [])
         setOpen(true)
-    }
-        console.log("Use history data:", useHistory);
+        }
+        
+        const handleReuse = async(item) => {
+            const res = await createReuseItem({ qr_id: item._id, user_id: authUser?.userId })
+            console.log("resss", res)
+            if (res.success) {   
+                setReuseItem(item)
+                setShowQrCard(true)
+                fetchHistory()
+            }
+
+        }
+        console.log("reuseItem",reuseItem)
     return (
         <div>
                     {/* ================= Desktop Table ================= */}
@@ -68,13 +85,19 @@ import { useRouter } from 'next/navigation';
                                                 </td>
 
                                                 <td className="p-4 text-right">
-                                                    <a
+                                                    {/* <a
                                                         href={item.qr_code_image}
                                                         target="_blank"
                                                         className="text-indigo-600 hover:underline font-medium"
                                                     >
                                                         View QR →
-                                                    </a>
+                                                    </a> */}
+                                                    <div
+                                                        onClick={()=>handleReuse(item)}
+                                                        className="text-indigo-600 hover:underline font-medium"
+                                                    >
+                                                        View QR →
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}
@@ -184,7 +207,21 @@ import { useRouter } from 'next/navigation';
                                 </div>
                             </div>
                         ))}
-                    </div>
+            </div>
+            
+
+            <Modal
+                isOpen={showQrCard}
+                onClose={() => setShowQrCard(false)}
+                title="QR Code"
+            >
+                <QRCard
+                    source='reuse'
+                    qrData={reuseItem}
+                    setAmount={reuseItem.value}
+                    setQrData={setReuseItem}
+                />
+            </Modal>
                     </div>
     )
     }

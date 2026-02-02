@@ -57,7 +57,7 @@ export default function HistoryPage() {
                     </div>
                 )}
 
-<HistoryCardTable history={history} />
+                <HistoryCardTable history={history} fetchHistory={fetchHistory} />
             </div>
         </main>
     );

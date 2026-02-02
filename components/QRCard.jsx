@@ -1,12 +1,24 @@
+import { useRouter } from 'next/navigation';
 import React from 'react'
 
-export const QRCard = ({qrData, setAmount, setQrData}) => {
+export const QRCard = ({ qrData, setAmount, setQrData, source }) => {
+    const router = useRouter()
        const downloadQR = () => {
         const link = document.createElement("a");
         link.href = qrData?.qr_code_image;
         link.download = `upi-qr-${qrData.value}.png`;
         link.click();
     };
+
+    const handleNewGenerate = () => {
+        if (source === "new") {
+            
+            setQrData([]);
+            setAmount("");
+        } else {
+            router.push('/generate')   // ✅ correct navigation
+        }
+    }
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
                         <div className="inline-block bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-medium mb-4">
@@ -36,10 +48,7 @@ export const QRCard = ({qrData, setAmount, setQrData}) => {
                             </button>
 
                             <button
-                                onClick={() => {
-                                    setQrData([]);
-                                    setAmount("");
-                                }}
+                                onClick={() => handleNewGenerate()}
                                 className="w-full border text-green-700 border-gray-300 hover:bg-gray-100 py-3 rounded-lg"
                             >
                                 Generate New QR
